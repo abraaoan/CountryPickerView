@@ -6,14 +6,26 @@
 //  Copyright © 2025 Kizito Nwose. All rights reserved.
 //
 
+import Foundation
+
 public struct Country: Equatable, Identifiable, Codable {
     public let id: UUID
     public let name: String
     public let code: String
     public let phoneCode: String
     
-    private enum codeKeys: String, CodingKey {
-        case name, code, phoneCode
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case code
+        case phoneCode = "dial_code"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.code = try container.decode(String.self, forKey: .code)
+        self.phoneCode = try container.decode(String.self, forKey: .phoneCode)
+        self.id = UUID()
     }
     
     init(name: String, code: String, phoneCode: String) {

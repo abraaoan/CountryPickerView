@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@available(iOS 15.0, *)
 public struct CountryView: View {
     var service: DataServiceProtocol
     var customLayout: CustomLayout
@@ -21,7 +22,11 @@ public struct CountryView: View {
             return countries
         }
         
-        return countries.filter { ($0.localizedName() ?? $0.name).lowercased().contains(query.lowercased()) }
+        return countries.filter {
+            ($0.localizedName() ?? $0.name).lowercased().contains(query.lowercased()) ||
+            $0.code.lowercased().contains(query.lowercased())  ||
+            $0.phoneCode.contains(query.lowercased())
+        }
     }
     
     private var filteredPreferedCountries: [Country] {
@@ -33,7 +38,11 @@ public struct CountryView: View {
             return preferredCountries
         }
         
-        return preferredCountries.filter { ($0.localizedName() ?? $0.name).lowercased().contains(query.lowercased()) }
+        return preferredCountries.filter {
+            ($0.localizedName() ?? $0.name).lowercased().contains(query.lowercased()) ||
+            $0.code.lowercased().contains(query.lowercased())  ||
+            $0.phoneCode.contains(query.lowercased())
+        }
     }
     
     public init(service: DataServiceProtocol = DataService(),
@@ -91,7 +100,7 @@ public struct CountryView: View {
         }
         .background(
             LinearGradient(
-                colors: [.gray, .white],
+                colors: [.gray, .gray.opacity(0.25)],
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -102,6 +111,7 @@ public struct CountryView: View {
     }
 }
 
+@available(iOS 15.0, *)
 #Preview {
     let service = MockDataService()
     CountryView(service: service)

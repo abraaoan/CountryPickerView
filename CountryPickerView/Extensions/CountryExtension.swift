@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension Country {
     public var flag: UIImage {

@@ -8,6 +8,7 @@
 
 import SwiftUICore
 
+@available(iOS 15.0, *)
 public struct CustomLayout {
     public let title: String
     public let preferredTitle: String

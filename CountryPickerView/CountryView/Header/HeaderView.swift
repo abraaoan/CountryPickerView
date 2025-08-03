@@ -12,6 +12,7 @@ public enum ClosePosition {
     case leading, trailing
 }
 
+@available(iOS 15.0, *)
 struct HeaderView: View {
     let title: String
     let titleFont: Font
@@ -25,6 +26,7 @@ struct HeaderView: View {
         self.title = title
         self.titleFont = titleFont
         self.closePosition = closePosition
+        self.onCloseTapped = onCloseTapped
     }
     
     var body: some View {
@@ -66,6 +68,7 @@ struct HeaderView: View {
     }
 }
 
+@available(iOS 15.0, *)
 #Preview {
     VStack {
         HeaderView(title: "Select a country bellow", closePosition: .trailing, onCloseTapped: {

@@ -8,12 +8,13 @@
 
 import SwiftUI
 
+@available(iOS 15.0, *)
 struct RowView: View {
     let image: UIImage
     let text: String
     let font: Font
     let color: Color
-    @State var isSelected: Bool
+    let isSelected: Bool
     
     init(image: UIImage,
          text: String,
@@ -55,12 +56,14 @@ struct RowView: View {
     }
 }
 
+@available(iOS 15.0, *)
 extension RowView {
     private enum Constants {
         static let height = 50.0
     }
 }
 
+@available(iOS 15.0, *)
 #Preview {
     let image = UIImage(named: "BR", in: ._module, compatibleWith: nil)!
     let image2 = UIImage(named: "GS", in: ._module, compatibleWith: nil)!

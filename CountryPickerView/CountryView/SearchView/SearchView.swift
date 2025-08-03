@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@available(iOS 15.0, *)
 struct SearchView: View {
     @Binding var query: String
     let placeholder: String
@@ -32,6 +33,7 @@ struct SearchView: View {
     }
 }
 
+@available(iOS 15.0, *)
 #Preview {
     VStack {
         SearchView(query: .constant(""), placeholder: "Search here")
