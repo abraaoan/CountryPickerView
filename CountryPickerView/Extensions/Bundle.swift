@@ -34,3 +34,25 @@ extension Foundation.Bundle {
         // fatalError("unable to find bundle named CountryPickerView_CountryPickerView")
     }()
 }
+
+//
+extension Bundle {
+    static var frameworkModule: Bundle = {
+        let bundleName = "CountryPickerView_CountryPickerView"
+        
+        let candidates = [
+            Bundle.main.resourceURL,
+            Bundle(for: BundleFinder.self).resourceURL,
+            Bundle.main.bundleURL,
+        ]
+        
+        for candidate in candidates {
+            let bundlePath = candidate?.appendingPathComponent(bundleName + ".bundle")
+            if let bundle = bundlePath.flatMap(Bundle.init(url:)) {
+                return bundle
+            }
+        }
+        
+        return Bundle(for: BundleFinder.self)
+    }()
+}

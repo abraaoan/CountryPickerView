@@ -14,28 +14,6 @@ public enum SearchBarPosition {
     case tableViewHeader, navigationBar, hidden
 }
 
-public struct Country: Equatable {
-    public let name: String
-    public let code: String
-    public let phoneCode: String
-    public func localizedName(_ locale: Locale = Locale.current) -> String? {
-        return locale.localizedString(forRegionCode: code)
-    }
-    public var flag: UIImage {
-        // Cocoapods || SPM
-        return UIImage(named: "Images/\(code.uppercased())", in: Bundle._module, compatibleWith: nil) ??
-            UIImage.init(named: code.uppercased(), in: Bundle._module, compatibleWith: nil)!
-    }
-}
-
-public func ==(lhs: Country, rhs: Country) -> Bool {
-    return lhs.code == rhs.code
-}
-public func !=(lhs: Country, rhs: Country) -> Bool {
-    return lhs.code != rhs.code
-}
-
-
 public class CountryPickerView: NibView {
     @IBOutlet weak var spacingConstraint: NSLayoutConstraint!
     @IBOutlet public weak var flagImageView: UIImageView! {
