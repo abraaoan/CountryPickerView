@@ -10,9 +10,11 @@ import SwiftUI
 
 struct SearchView: View {
     @Binding var query: String
+    let placeholder: String
     
-    init(query: Binding<String>) {
+    init(query: Binding<String>, placeholder: String = "Search") {
         self._query = query
+        self.placeholder = placeholder
     }
     
     var body: some View {
@@ -21,7 +23,7 @@ struct SearchView: View {
             .overlay {
                 HStack {
                     Image(systemName: "magnifyingglass")
-                    TextField("Search", text: $query)
+                    TextField(placeholder, text: $query)
                 }
                 .padding(.horizontal, 20)
             }
@@ -31,6 +33,16 @@ struct SearchView: View {
 }
 
 #Preview {
-    SearchView(query: .constant(""))
-        .background(.gray)
+    VStack {
+        SearchView(query: .constant(""), placeholder: "Search here")
+            .padding(.top, 100)
+        Spacer()
+    }
+    .background { LinearGradient(
+        colors: [.gray, .white],
+        startPoint: .top,
+        endPoint: .bottom)
+    }
+    .ignoresSafeArea(.all)
+        
 }

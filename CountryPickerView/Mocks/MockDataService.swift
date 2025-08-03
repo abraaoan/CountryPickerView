@@ -22,7 +22,8 @@ actor MockDataService: DataServiceProtocol {
             Country(name: "Hong Kong", code: "HK", phoneCode: "+852"),
             Country(name: "Micronesia, Federated States of Micronesia", code: "FM", phoneCode: "+691"),
             Country(name: "Saint Helena, Ascension and Tristan Da Cunha", code: "SH", phoneCode: "+290"),
-            Country(name: "Ilhas Geórgia do Sul e Sandwich do nao sei o que", code: "GS", phoneCode: "+500")
+            Country(name: "Ilhas Geórgia do Sul e Sandwich do nao sei o que", code: "GS", phoneCode: "+500"),
+            Country(name: "Spain", code: "ES", phoneCode: "+34")
         ]
         
         return countries

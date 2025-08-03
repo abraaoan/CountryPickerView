@@ -8,12 +8,15 @@
 
 import Foundation
 
-protocol DataServiceProtocol {
+public protocol DataServiceProtocol {
     func loadCountries() async -> [Country]
 }
 
-actor DataService: DataServiceProtocol {
-    func loadCountries() -> [Country] {
+public actor DataService: DataServiceProtocol {
+    
+    public init() {}
+    
+    public func loadCountries() -> [Country] {
         let path = Bundle._module.path(forResource: Constants.path, ofType: Constants.fileType) ??
         Bundle._module.path(forResource: Constants.resource, ofType: Constants.fileType)
         guard let jsonPath = path,

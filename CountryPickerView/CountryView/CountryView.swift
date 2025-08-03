@@ -8,10 +8,13 @@
 
 import SwiftUI
 
-struct CountryView: View {
+public struct CountryView: View {
     var service: DataServiceProtocol
+    var customLayout: CustomLayout
+    @Environment(\.dismiss) var dismiss
     @State private var countries: [Country] = []
     @State private var query: String = ""
+    @State private var selectedCountry: Country?
     
     private var filteredCountries: [Country] {
         if query.isEmpty {
@@ -21,33 +24,69 @@ struct CountryView: View {
         return countries.filter { ($0.localizedName() ?? $0.name).lowercased().contains(query.lowercased()) }
     }
     
-    var body: some View {
+    private var filteredPreferedCountries: [Country] {
+        let preferredCountries = customLayout.preferredCountries.compactMap { code in
+            countries.first( where: { code == $0.code } )
+        }
+        
+        if query.isEmpty {
+            return preferredCountries
+        }
+        
+        return preferredCountries.filter { ($0.localizedName() ?? $0.name).lowercased().contains(query.lowercased()) }
+    }
+    
+    public init(service: DataServiceProtocol = DataService(),
+         selectedCountry: Country? = nil,
+         customLayout: CustomLayout = .default()) {
+        self.service = service
+        self.customLayout = customLayout
+        self.selectedCountry = selectedCountry
+    }
+    
+    public var body: some View {
         VStack {
-            HStack {
-                Button {} label: {
-                    Circle()
-                        .fill(.white)
-                        .overlay {
-                            Image(systemName: "xmark")
-                                .foregroundColor(.black)
-                        }
-                        .frame(width: 40, height: 40)
-                }
-                Spacer()
-                Text("Select a country")
-                    .padding(.leading, -40)
-                Spacer()
-            }
+            HeaderView(title: customLayout.title,
+                       closePosition: customLayout.closePosition,
+                       onCloseTapped: { dismiss() })
             .padding(.horizontal, 20)
             .padding(.vertical, 5)
-            SearchView(query: $query)
+            SearchView(query: $query, placeholder: customLayout.searchPlaceholder)
             ScrollView {
-                LazyVStack(spacing: 8) {
-                    ForEach(filteredCountries) { country in
-                        RowView(image: country.flag,
-                                text: "\(country.localizedName() ?? country.name) (\(country.phoneCode))")
+                
+                if filteredPreferedCountries.count > 0 {
+                    LazyVStack(spacing: 8) {
+                        Text(customLayout.preferredTitle.uppercased())
+                            .font(customLayout.preferredTitleFont)
+                            .foregroundColor(customLayout.preferredTitleColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 20)
+                            .padding(.top, 10)
+                        ForEach(filteredPreferedCountries) { country in
+                            RowView(image: country.flag,
+                                    text: "\(country.localizedName() ?? country.name) (\(country.phoneCode))",
+                                    isSelected: country == selectedCountry,
+                                    font: customLayout.rowFont,
+                                    color: customLayout.rowColor)
+                            .onTapGesture {
+                                selectedCountry = country
+                            }
+                        }
                     }
                 }
+                
+                LazyVStack(spacing: 8) {
+                    ForEach(filteredCountries.filter { !filteredPreferedCountries.contains($0)  }) { country in
+                        RowView(image: country.flag,
+                                text: "\(country.localizedName() ?? country.name) (\(country.phoneCode))",
+                                isSelected: country == selectedCountry,
+                                font: customLayout.rowFont,
+                                color: customLayout.rowColor)
+                        .onTapGesture {
+                            selectedCountry = country
+                        }
+                    }
+                }.padding(.top, filteredPreferedCountries.count > 0 ? 40 : 0)
             }
         }
         .background(

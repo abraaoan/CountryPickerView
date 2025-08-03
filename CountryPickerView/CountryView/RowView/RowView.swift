@@ -11,12 +11,20 @@ import SwiftUI
 struct RowView: View {
     let image: UIImage
     let text: String
+    let font: Font
+    let color: Color
     @State var isSelected: Bool
     
-    init(image: UIImage, text: String, isSelected: Bool = false) {
+    init(image: UIImage,
+         text: String,
+         isSelected: Bool = false,
+         font: Font = .system(size: 15),
+         color: Color = .black) {
         self.image = image
         self.text = text
         self.isSelected = isSelected
+        self.font = font
+        self.color = color
     }
     
     var body: some View {
@@ -28,6 +36,8 @@ struct RowView: View {
                         Image(uiImage: image)
                             .clipShape(Circle())
                         Text(text)
+                            .font(font)
+                            .foregroundColor(color)
                         Spacer()
                         if isSelected {
                             Image(systemName: "checkmark")
@@ -47,7 +57,7 @@ struct RowView: View {
 
 extension RowView {
     private enum Constants {
-        static let height = 60.0
+        static let height = 50.0
     }
 }
 
