@@ -12,10 +12,12 @@ import SwiftUI
 struct SearchView: View {
     @Binding var query: String
     let placeholder: String
+    let searchLayout: CountrySearchLayout
     
-    init(query: Binding<String>, placeholder: String = "Search") {
+    init(query: Binding<String>, placeholder: String = "Search", searchLayout: CountrySearchLayout = .default()) {
         self._query = query
         self.placeholder = placeholder
+        self.searchLayout = searchLayout
     }
     
     var body: some View {
@@ -24,12 +26,16 @@ struct SearchView: View {
             .overlay {
                 HStack {
                     Image(systemName: "magnifyingglass")
+                        .foregroundColor(searchLayout.iconColor)
                     TextField(placeholder, text: $query)
+                        .font(searchLayout.font)
+                        .foregroundColor(searchLayout.textColor)
                 }
                 .padding(.horizontal, 20)
+                .foregroundColor(.black)
             }
             .frame(height: 52)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 15)
     }
 }
 

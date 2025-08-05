@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 15.0.0, *)
 actor MockDataService: DataServiceProtocol {
     func loadCountries() async -> [Country] {
         let countries = [

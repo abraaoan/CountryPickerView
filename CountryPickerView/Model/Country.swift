@@ -40,7 +40,7 @@ public struct Country: Equatable, Identifiable, Codable {
     }
     
     public var flagName: String {
-        code.uppercased()
+        code.lowercased()
     }
     
     static public func ==(lhs: Country, rhs: Country) -> Bool {

@@ -10,22 +10,19 @@ import SwiftUI
 
 @available(iOS 15.0, *)
 struct RowView: View {
-    let image: UIImage
+    let flag: String
     let text: String
-    let font: Font
-    let color: Color
     let isSelected: Bool
+    let rowLayout: CountryRowLayout
     
-    init(image: UIImage,
+    init(flag: String,
          text: String,
          isSelected: Bool = false,
-         font: Font = .system(size: 15),
-         color: Color = .black) {
-        self.image = image
+         rowLayout: CountryRowLayout = .default()) {
+        self.flag = flag
         self.text = text
         self.isSelected = isSelected
-        self.font = font
-        self.color = color
+        self.rowLayout = rowLayout
     }
     
     var body: some View {
@@ -34,11 +31,14 @@ struct RowView: View {
                 .fill(.white)
                 .overlay {
                     HStack {
-                        Image(uiImage: image)
+                        Image(flag, bundle: .module)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 30, height: 30)
                             .clipShape(Circle())
                         Text(text)
-                            .font(font)
-                            .foregroundColor(color)
+                            .font(rowLayout.font)
+                            .foregroundColor(rowLayout.color)
                         Spacer()
                         if isSelected {
                             Image(systemName: "checkmark")
@@ -52,7 +52,7 @@ struct RowView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: Constants.height)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 15)
     }
 }
 
@@ -65,19 +65,14 @@ extension RowView {
 
 @available(iOS 15.0, *)
 #Preview {
-    let image = UIImage(named: "BR", in: ._module, compatibleWith: nil)!
-    let image2 = UIImage(named: "GS", in: ._module, compatibleWith: nil)!
+    
     VStack {
         Spacer()
-        RowView(image: image, text: "Brasil (+55)", isSelected: true)
-        RowView(image: image2, text: "Ilhas Geórgia do Sul e Sandwich do nao sei o que (+500)", isSelected: true)
-        RowView(image: image2, text: "Ilhas Geórgia do Sul e Sandwich do nao sei o que (+500)")
+        RowView(flag: "br", text: "Brasil (+55)", isSelected: true)
+        RowView(flag: "br", text: "Ilhas Geórgia do Sul e Sandwich do nao sei o que (+500)", isSelected: true)
+        RowView(flag: "gs", text: "Ilhas Geórgia do Sul e Sandwich do nao sei o que (+500)")
         Spacer()
     }
-    .background {
-        LinearGradient(colors: [.gray, .white],
-                       startPoint: .top,
-                       endPoint: .bottom)
-    }
+    .background(.gray.opacity(0.15))
     .ignoresSafeArea(.all)
 }

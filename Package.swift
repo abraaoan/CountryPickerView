@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "CountryPickerView",
+    platforms: [.iOS(.v13)],
     products: [
         .library(name: "CountryPickerView", targets: ["CountryPickerView"])
     ],
@@ -11,7 +12,9 @@ let package = Package(
             name: "CountryPickerView",
             path: "CountryPickerView",
             resources: [
-            .process("Resources")]
+                .process("Assets.xcassets"),
+                .process("Resources")
+            ]
         )
     ]
 )

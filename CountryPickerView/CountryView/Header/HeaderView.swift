@@ -15,41 +15,38 @@ public enum ClosePosition {
 @available(iOS 15.0, *)
 struct HeaderView: View {
     let title: String
-    let titleFont: Font
-    let closePosition: ClosePosition
+    let headerLayout: CountryHeaderLayout
     var onCloseTapped: (() -> Void)?
     
     init(title: String,
-         titleFont: Font = .system(size: 18),
+         headerLayout: CountryHeaderLayout = .default(),
          closePosition: ClosePosition = .trailing,
          onCloseTapped: (() -> Void)? = nil) {
         self.title = title
-        self.titleFont = titleFont
-        self.closePosition = closePosition
+        self.headerLayout = headerLayout
         self.onCloseTapped = onCloseTapped
     }
     
     var body: some View {
         HStack {
-            if closePosition == .leading {
+            if headerLayout.closePosition == .leading {
                 Button { onCloseTapped?() } label: {
                     Circle()
                         .fill(.white)
                         .overlay {
                             Image(systemName: "xmark")
-                                .foregroundColor(.black)
                         }
                         .frame(width: 40, height: 40)
                 }
                 Spacer()
                 Text(title)
-                    .font(titleFont)
+                    .font(headerLayout.titleFont)
                     .padding(.leading, -40)
                 Spacer()
-            } else if closePosition == .trailing {
+            } else if headerLayout.closePosition == .trailing {
                 Spacer()
                 Text(title)
-                    .font(titleFont)
+                    .font(headerLayout.titleFont)
                     .padding(.leading, 40)
                 Spacer()
                 Button { onCloseTapped?() } label: {
@@ -63,8 +60,10 @@ struct HeaderView: View {
                 }
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 5)
+        .foregroundColor(headerLayout.titleColor)
+        .padding(.horizontal, 15)
+        .padding(.top, -30)
+        .foregroundColor(.black)
     }
 }
 

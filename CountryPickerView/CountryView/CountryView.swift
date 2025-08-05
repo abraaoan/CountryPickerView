@@ -11,11 +11,13 @@ import SwiftUI
 @available(iOS 15.0, *)
 public struct CountryView: View {
     var service: DataServiceProtocol
-    var customLayout: CustomLayout
+    var customLayout: CountryCustomLayout
+    var onSelect: ((Country) -> Void)
     @Environment(\.dismiss) var dismiss
     @State private var countries: [Country] = []
     @State private var query: String = ""
     @State private var selectedCountry: Country?
+    @State private var preferredCountries: [String]
     
     private var filteredCountries: [Country] {
         if query.isEmpty {
@@ -30,7 +32,7 @@ public struct CountryView: View {
     }
     
     private var filteredPreferedCountries: [Country] {
-        let preferredCountries = customLayout.preferredCountries.compactMap { code in
+        let preferredCountries = self.preferredCountries.compactMap { code in
             countries.first( where: { code == $0.code } )
         }
         
@@ -46,22 +48,33 @@ public struct CountryView: View {
     }
     
     public init(service: DataServiceProtocol = DataService(),
-         selectedCountry: Country? = nil,
-         customLayout: CustomLayout = .default()) {
+                selectedCountry: Country? = nil,
+                customLayout: CountryCustomLayout = .default(),
+                preferredCountries: [String] = [],
+                onSelect: @escaping ((Country) -> Void)) {
         self.service = service
         self.customLayout = customLayout
         self.selectedCountry = selectedCountry
+        self.preferredCountries = preferredCountries
+        self.onSelect = onSelect
     }
     
     public var body: some View {
-        VStack {
-            HeaderView(title: customLayout.title,
-                       closePosition: customLayout.closePosition,
-                       onCloseTapped: { dismiss() })
-            .padding(.horizontal, 20)
-            .padding(.vertical, 5)
-            SearchView(query: $query, placeholder: customLayout.searchPlaceholder)
-            ScrollView {
+        VStack(spacing: 0) {
+            RoundedRectangle(cornerRadius: 25)
+                .fill(.clear)
+                .ignoresSafeArea(.all, edges: .top)
+                .frame(height: 120)
+                .overlay {
+                    VStack {
+                        HeaderView(title: customLayout.title, onCloseTapped: { dismiss() })
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 5)
+                        SearchView(query: $query, placeholder: customLayout.searchPlaceholder)
+                    }
+                }
+                
+            ScrollView(showsIndicators: false) {
                 
                 if filteredPreferedCountries.count > 0 {
                     LazyVStack(spacing: 8) {
@@ -72,39 +85,35 @@ public struct CountryView: View {
                             .padding(.leading, 20)
                             .padding(.top, 10)
                         ForEach(filteredPreferedCountries) { country in
-                            RowView(image: country.flag,
+                            RowView(flag: country.flagName,
                                     text: "\(country.localizedName() ?? country.name) (\(country.phoneCode))",
-                                    isSelected: country == selectedCountry,
-                                    font: customLayout.rowFont,
-                                    color: customLayout.rowColor)
+                                    isSelected: country == selectedCountry)
                             .onTapGesture {
                                 selectedCountry = country
+                                onSelect(country)
+                                dismiss()
                             }
                         }
                     }
+                    .padding(.top, 8)
                 }
                 
                 LazyVStack(spacing: 8) {
                     ForEach(filteredCountries.filter { !filteredPreferedCountries.contains($0)  }) { country in
-                        RowView(image: country.flag,
+                        RowView(flag: country.flagName,
                                 text: "\(country.localizedName() ?? country.name) (\(country.phoneCode))",
-                                isSelected: country == selectedCountry,
-                                font: customLayout.rowFont,
-                                color: customLayout.rowColor)
+                                isSelected: country == selectedCountry)
                         .onTapGesture {
                             selectedCountry = country
+                            onSelect(country)
+                            dismiss()
                         }
                     }
-                }.padding(.top, filteredPreferedCountries.count > 0 ? 40 : 0)
+                }.padding(.top, filteredPreferedCountries.count > 0 ? 40 : 8)
             }
+            
         }
-        .background(
-            LinearGradient(
-                colors: [.gray, .gray.opacity(0.25)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        )
+        .background(.gray.opacity(0.15))
         .task {
             countries = await service.loadCountries()
         }
@@ -114,5 +123,7 @@ public struct CountryView: View {
 @available(iOS 15.0, *)
 #Preview {
     let service = MockDataService()
-    CountryView(service: service)
+    CountryView(service: service) { _ in 
+        
+    }
 }

@@ -45,3 +45,12 @@ extension UINavigationController {
         }
     }
 }
+
+extension Country {
+    public var flag: UIImage {
+        // For some reason this extension for SPM is not geneated when we build the
+        // framework (CMD + B) but gets generated when the framework is used in a progect.
+        return UIImage(named: flagName, in: .module, compatibleWith: nil)!
+    }
+}
+
