@@ -13,6 +13,7 @@ public struct CountryView: View {
     var service: DataServiceProtocol
     var customLayout: CountryCustomLayout
     var onSelect: ((Country) -> Void)
+    public var onClose: (() -> Void)? // For UIKit when needed.
     @Environment(\.dismiss) var dismiss
     @State private var countries: [Country] = []
     @State private var query: String = ""
@@ -67,7 +68,10 @@ public struct CountryView: View {
                 .frame(height: 120)
                 .overlay {
                     VStack {
-                        HeaderView(title: customLayout.title, onCloseTapped: { dismiss() })
+                        HeaderView(title: customLayout.title, onCloseTapped: {
+                            dismiss()
+                            onClose?()
+                        })
                             .padding(.horizontal, 20)
                             .padding(.vertical, 5)
                         SearchView(query: $query, placeholder: customLayout.searchPlaceholder)
